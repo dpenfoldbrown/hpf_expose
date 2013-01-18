@@ -1,0 +1,81 @@
+/*
+ * General CSS for hpf-expose project
+ * dpb 1/15/2013
+ *
+ */
+
+
+/** General rules **/
+
+body {
+    /* font-family: "Lucida Grande", Helvetica, Arial, sans-serif; */
+    /* font-size: 12px; */
+    color: #000000;
+    line-height: 16px;
+    padding-top: 60px;
+    padding-bottom: 40px;
+}
+
+p.fixed {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 13px;
+    color: #111111;
+}
+
+span.note {
+    color: #FA8072;
+}
+
+.page-header {
+    padding: 30px;
+    margin-bottom: 20px;
+    font-size: inherit;
+    font-weight: inherit;
+    color: inherit;
+    background-color: #EEEEEE;
+    -webkit-border-radius: 6px; /* safari and early chrome*/
+       -moz-border-radius: 6px; /* Mozilla firefox*/
+            border-radius: 6px; /* Rounded corners*/
+}
+
+
+/** Nav custom **/
+
+div.nav-container {
+    margin-left: 25px;
+    margin-right: 25px;
+}
+
+
+/** Form custom **/
+
+form .small {
+    font-size: 14px;
+}
+
+
+/** FOOTER **/
+
+#footer {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    margin-left: 25px;
+    margin-right: 25px;
+    padding-top: 15px;
+    font-size: 75%;
+}
+
+#footer p {
+    /* text-align: center; */
+    margin: 2px 0;
+}
+
+#footer-icons {
+    display: inline;
+    float: right;
+}
+
+#footer img {
+    width: 45px;
+    height: 45px;
+}

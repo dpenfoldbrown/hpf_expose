@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block body %}
+    <h1>Domain</h1>
+    
+    {% if domain_dbo %}
+        
+        <h3>id + AA sequence</h3>
+        <p>{{ domain_dbo.id }}<p>
+        <p class="fixed">{{ domain_dbo.sequence.sequence }}</p>
+        
+        <h3>proteins</h3>
+        {% for p in domain_dbo.proteins %}
+            <p>{{ p }}</p>
+        {% endfor %}
+    
+    {% else %}
+    
+        <p>[Dom search form]</p>
+
+    {% endif %}
+
+{% endblock%}

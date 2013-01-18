@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en-US" xml:lang="en-US">
+
+<!--
+  - Bonneau Laboratory affiliated webpage. HPF data and resource the property
+  - of Richard Bonneau/NYU CGSB.
+  - Authors: Duncan Penfold-Brown
+-->
+
+<head>
+    <title>hpf-expose</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="shortcut icon" href="img/fav-icon.png" type="image/x-icon" />
+    
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap-responsive.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/hpf-expose.css') }}" />
+
+</head>
+
+<body>
+    
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+
+<div class=page>
+    
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+        <div class="nav-container">
+            <a class="brand" href="{{ url_for('index') }}">HPF expose</a>
+            <ul class="nav">
+                <li><a href="{{ url_for('protein') }}">protein</a></li>
+                <li><a href="{{ url_for('domain') }}">domain</a></li>
+                <li><a href="{{ url_for('sequence') }}">sequence</a></li>
+                <li><a href="{{ url_for('experiment') }}">experiment</a></li>
+                <li><a class="disabled" href="{{ url_for('blast') }}">blast</a></li>
+                <li><a href="{{ url_for('about') }}">about</a></li>
+            </ul>
+            <div class="messages pull-right">
+                {% for message in get_flashed_messages() %}
+                    <div class=flash>{{ message }}</div>
+                {% endfor %}
+            </div>
+        </div>
+        </div>
+    
+    </div>
+ 
+
+    <div class="container">
+        {% block body %}{% endblock %}
+    </div>
+
+
+    <div id="footer">
+        <hr />
+        <div id="footer-icons">
+            <a href="http://www.nyu.edu/" target="_blank"><img src="{{ url_for('static', filename='img/nyu-small.png') }}" alt="NYU"/></a>
+        </div>
+        <p>Site definitely in progress</p>
+        <p>Site and data &copy; 2013 Richard Bonneau, Duncan Penfold-Brown</p>
+    </div>
+
+</div>
+
+</body>
+</html>

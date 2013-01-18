@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+{% block body %}
+    <h1>Sequence</h1>
+    
+    {% if seq_dbo %}
+        
+        <h3>id + AA sequence</h3>
+        <p>{{ seq_dbo.id }}<p>
+        <p class="fixed">{{ seq_dbo.sequence }}</p>
+        
+
+        <h3>psipred</h3>
+        {% for ps in seq_dbo.psipred %}
+            <p class="fixed">{{ ps.prediction }} (Ginzu Version: {{ ps.ginzu_version }})</p>
+            <p class="fixed">{{ ps.confidence }}</p>
+        {% endfor %}
+        
+        <h3>proteins</h3>
+        {% for p in seq_dbo.proteins %}
+            <p>{{ p }}</p>
+        {% endfor %}
+        
+        <h3>domains</h3>
+        {% for d in seq_dbo.domains %}
+            <p>{{ d }}</p>
+        {% endfor %}
+    
+    {% else %}
+    
+        <p>[Seq search form]</p>
+
+    {% endif %}
+
+{% endblock%}
