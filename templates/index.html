@@ -15,14 +15,14 @@
            
             <!-- NOTE: that both GET and POST methods put variables in Flask request.form dict -->
             <form class="form-inline" action="{{ url_for('protein') }}" method=post>
-                <input  name="term"  type="text" class="small span2" placeholder="...">
-                <select name="field" class="small input-small">
+                <select name="type" class="small input-small">
                     <option value="hpf_id" selected>hpf ID</option>
                     <option value="seq_id" >seq ID</option>
                     <option value="ac"     >accession</option>
                     <option value="keyword">keyword (!)</option>
                 </select>
-                <button type="submit" value="Submit" class="small btn btn-primary">search</button>
+                <input  name="term"  type="text" class="small span2" placeholder="...">
+                <button type="submit" value="Submit" class="small btn btn-primary btn-small">search</button>
             </form>
         </div>
         
@@ -30,7 +30,13 @@
             <h3>Domain</h3>
             <p>Domain information includes all domain properties (length, source, region, type), sequence, Ginzu version, and known/unknown structure display.</p>
             <p>Domains can be fetched by domain ID, or sequence key. To see the component domains of a protein, search in Protein field.</p>
-            <form>
+            <form class="form-inline" action="{{ url_for('domain') }}" method=post>
+                <select name="type" class="small input-small">
+                    <option value="hpf_id" selected>hpf ID</option>
+                    <option value="seq_id" >seq ID</option>
+                </select>
+                <input  name="term"  type="text" class="small span2" placeholder="...">
+                <button type="submit" value="Submit" class="small btn btn-primary btn-small">search</button>
             </form>
         </div>
         
@@ -38,7 +44,12 @@
             <h3>Sequence</h3>
             <p>Sequence information includes AA sequence, tool results (Psipred, etc), and proteins and/or domains associated with the sequence.</p>
             <p>Sequences are searchable by sequence ID, and can be compared to our databases via <a href="{{ url_for('blast') }}">blast</a> (or see the Blast field).</p>
-            <form>
+            <form class="form-inline" action="{{ url_for('sequence') }}" method=post>
+                <select name="type" class="small input-small">
+                    <option value="hpf_id" selected>hpf ID</option>
+                </select>
+                <input  name="term"  type="text" class="small span2" placeholder="...">
+                <button type="submit" value="Submit" class="small btn btn-primary btn-small">search</button>
             </form>
         </div>
     </div>
@@ -49,7 +60,14 @@
             <h3>Experiment</h3>
             <p>The experiment page displays a summary of the proteins and domains encapsulated by an experiment (a set of proteins, usually from a particular organism). </p>
             <p>Experiments can be fetched by ID, taxonomy ID, or organism name keyword search.</p>
-            <form>
+            <form class="form-inline" action="{{ url_for('experiment') }}" method=post>
+                <select name="type" class="input-small">
+                    <option value="hpf_id" selected>hpf ID</option>
+                    <option value="tax_id">tax. ID</option>
+                    <option value="organism">organism</option>
+                </select>
+                <input  name="term"  type="text" class="span2" placeholder="...">
+                <button type="submit" value="Submit" class="btn btn-primary btn-small">search</button>
             </form>
         </div>
         
@@ -62,7 +80,7 @@
         <div class="span4">
             <h3>...</h3>
             <p>Tools and lookups for the future...</p>
-            <p><span class="note">Note</span> that to view protein/domain structure and function predictions, find the relevant proteins/domains via the above fields.</p>
+            <p><span class="note">Note</span> that to view protein/domain structure and function predictions, find the relevant proteins/domains via the above types.</p>
         </div>
         
     </div>

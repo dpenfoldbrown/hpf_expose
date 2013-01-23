@@ -4,7 +4,7 @@
 ##
 
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash, _app_ctx_stack
-from hpf.hddb.db import ScopedSession, Sequence, Protein, Domain
+from hpf.hddb.db import Sequence, Protein, Domain
 
 # Flask init
 app = Flask(__name__)
@@ -13,16 +13,38 @@ app.debug = True
 # DB init
 SESSION = None
 
+
+## UTILITY FUNCTIONS
+
 def get_session():
     """
     Initializes and returns the global session object
     """
+    from hpf.hddb.db import ScopedSession
     global SESSION
     if SESSION:
         return SESSION
     else:
         return ScopedSession()
-    
+
+def get_search_fields(request_fields):
+    """
+    Takes a request.form/args/values dict (for POST, GET, and both method forms),
+    or any multi-dict, and returns the two common search fields for this site:
+    type (eg: hpf_id, keyword, etc) and term (the term to search for or fetch).
+    TODO: should return a nice error if keys are not in multi-dict
+    For now, leaves the request, as a key error/400 bad request exception will
+    be raised when trying to fetch non-entities
+    """
+    if 'type' not in request_fields:
+        pass
+    elif 'term' not in request_fields:
+        pass
+    return request_fields['type'], request_fields['term']
+        
+
+
+## ROUTES
 
 @app.route('/')
 def index():
@@ -32,11 +54,15 @@ def index():
    return render_template('index.html')
 
 
-@app.route('/sequence')
+@app.route('/sequence', methods=['GET','POST'])
 def sequence():
     """
     The sequence index page
     """
+    if request.method == 'POST':
+        type, search_term = get_search_fields(request.form)
+        return redirect(url_for('fetch_sequence', sequence_id=search_term))
+    
     return render_template('sequence.html')
 
 @app.route('/sequence/<int:sequence_id>')
@@ -49,7 +75,7 @@ def fetch_sequence(sequence_id):
     return render_template('sequence.html', seq_dbo=seq_dbo)
 
 
-@app.route('/experiment')
+@app.route('/experiment', methods=['GET','POST'])
 def experiment():
     """
     Experiment index page
@@ -69,17 +95,16 @@ def protein():
     """
     The protein index page
     """
-    if 'term' in request.form and 'field' in request.form:
-        field = request.form['field']
-        search_term = request.form['term']
+    if request.method == 'POST':
+        type, search_term = get_search_fields(request.form)
 
-        if field == "hpf_id":
+        if type == "hpf_id":
             return redirect(url_for('fetch_protein', protein_id=search_term))
-        elif field == "seq_id":
+        elif type == "seq_id":
             pass
-        elif field == "ac":
+        elif type == "ac":
             pass
-        elif field == "keyword":
+        elif type == "keyword":
             pass
     
     return render_template('protein.html')
@@ -94,7 +119,7 @@ def fetch_protein(protein_id):
     return render_template('protein.html', protein_dbo=p)
 
 
-@app.route('/domain')
+@app.route('/domain', methods=['GET','POST'])
 def domain():
     """
     Domain index page
