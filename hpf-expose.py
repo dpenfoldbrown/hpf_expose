@@ -4,7 +4,7 @@
 ##
 
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash, _app_ctx_stack
-from hpf.hddb.db import Sequence, Protein, Domain
+from hpf.hddb.db import Sequence, Protein, Domain, SequenceAc
 
 # Flask init
 app = Flask(__name__)
@@ -101,11 +101,20 @@ def protein():
         if type == "hpf_id":
             return redirect(url_for('fetch_protein', protein_id=search_term))
         elif type == "seq_id":
-            pass
+            sess = get_session()
+            proteins = sess.query(Protein).filter_by(sequence_key=search_term).all()
+            return render_template('protein.html', proteins=proteins)
         elif type == "ac":
-            pass
+            sess = get_session()
+            acs = sess.query(SequenceAc).filter_by(ac=search_term).all()
+            proteins = [a.protein for a in acs if a.protein]
+            return render_template('protein.html', proteins=proteins)
         elif type == "keyword":
-            pass
+            sess = get_session()
+            acs = sess.query(SequenceAc).filter(SequenceAc.description.like("%{0}%".format(search_term))).all()
+            proteins = [a.protein for a in acs if a.protein]
+            return render_template('protein.html', proteins=proteins)
+        return render_template('bad_search.html', request=request)
     
     return render_template('protein.html')
 
@@ -116,7 +125,7 @@ def fetch_protein(protein_id):
     """
     sess = get_session()
     p = sess.query(Protein).get(protein_id)
-    return render_template('protein.html', protein_dbo=p)
+    return render_template('protein.html', proteins=[p])
 
 
 @app.route('/domain', methods=['GET','POST'])
@@ -124,6 +133,16 @@ def domain():
     """
     Domain index page
     """
+    if request.method == 'POST':
+        type, search_term = get_search_fields(request.form)
+        if type == "hpf_id":
+            return redirect(url_for('fetch_domain', domain_id=search_term))
+        elif type == "seq_id":
+            pass
+        elif type == "prediction_code":
+            pass
+        return render_template('bad_search.html', request=request)
+    
     return render_template('domain.html')
 
 @app.route('/domain/<int:domain_id>')
@@ -132,7 +151,9 @@ def fetch_domain(domain_id):
     Domain display page. Includes: all info, sequence, ginzu info, region,
     and known v unknown structure display
     """
-    return "TODO"
+    s = get_session()
+    d = s.query(Domain).get(domain_id)
+    return render_template('domain.html', domain_dbo=d)
 
 @app.route('/blast')
 def blast():
