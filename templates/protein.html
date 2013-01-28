@@ -2,21 +2,60 @@
 {% block body %}
     <h1>Protein</h1>
     
-    {% if protein_dbo %}
-        
-        <h3>id + AA sequence</h3>
-        <p>{{ protein_dbo.id }}<p>
-        <p class="fixed">{{ protein_dbo.sequence.sequence }}</p>
-        
-        <h3>domains</h3>
-        {% for d in protein_dbo.domains %}
-            <p>{{ d }}</p>
-        {% endfor %}
-    
-    {% else %}
-    
-        <p>[Prot search form]</p>
+    {% if proteins %}
+        <ul class="nav nav-pills nav-stacked">
+        {% for p in proteins %}
+                <li class="colored"><a data-toggle="collapse" href="#{{ p.id }}">{{p.ac.ac}} ID: {{ p.id }} / Sequence: {{ p.sequence_key }} / Experiment: {{ p.experiment_key }}<i class="icon-chevron-down pull-right"></i></a></li>
+                <div id="{{ p.id }}" class="collapse">
 
+                    <h4>Sequence</h4>
+                    <textarea class="sequence">
+                        {{p.sequence.sequence}}
+                    </textarea>
+                    
+                    {% if p.sequence.psipred %}
+                        <h4>Psipred</h4>
+                        <textarea class="psipred">
+                        {{ p.sequence.psipred[0].prediction }}
+                        {{ p.sequence.psipred[0].confidence }}
+                        </textarea>
+                    {% endif %} 
+                    
+                    {% if p.sequence.disopred %}
+                        <h4>Disopred</h4>
+                        <textarea class="disopred">
+                        {{ p.sequence.disopred[0].file }}
+                        </textarea>
+                    {% endif%}
+                    
+                    {% if p.domains %}
+                        <h4>Domains</h4>
+                        {% for d in p.domains %}
+                            <p><a href="{{ url_for('fetch_domain', domain_id=d.id) }}" target="_blank">{{ d }}</a></p>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <hr />
+                </div> <!-- END collapsible region -->    
+        {% endfor %}
+        </ul>
+
+    {% elif proteins == [] %}
+        
+        <p>No proteins found for given search terms. Tryyyy agaaaainnnnn</p>
+        
     {% endif %}
+        
+    <form class="form-inline" action="{{ url_for('protein') }}" method=post>
+        <select name="type" class="small input-small">
+            <option value="hpf_id" selected>hpf ID</option>
+            <option value="seq_id" >seq ID</option>
+            <option value="ac"     >accession</option>
+            <option value="keyword">keyword (!)</option>
+        </select>
+        <input  name="term"  type="text" class="small span2" placeholder="...">
+        <button type="submit" value="Submit" class="small btn btn-primary btn-small">search</button>
+    </form>
+
 
 {% endblock%}
