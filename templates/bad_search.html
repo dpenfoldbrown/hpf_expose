@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block body %}
+    <h1>Error!</h1>
+    
+    <p>Note that the feature you have searched for (search type) simply may not have yet been implemented.</p>
+    
+    {% if request %}
+        
+        <p>Your search terms:</p>
+        {% for t in request.values %}
+            <blockquote><p>{{t}} : {{request.values[t]}}</p></blockquote>
+        {% endfor %}
+        <p>were not understood. Please try again.</p>
+    
+    {% else %}
+        
+        <p>There was a problem with your search. Please check yoself and try again.<p>
+    
+    {% endif %}
+
+{% endblock%}
