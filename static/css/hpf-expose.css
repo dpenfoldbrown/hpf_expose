@@ -38,6 +38,38 @@ span.note {
             border-radius: 6px; /* Rounded corners*/
 }
 
+/* List display */
+
+ul.nav li.colored {
+    background-color: #BCDEEE;
+    -webkit-border-radius: 6px; /* safari and early chrome*/
+       -moz-border-radius: 6px; /* Mozilla firefox*/
+            border-radius: 6px; /* Rounded corners*/
+}
+
+textarea {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 13px;
+    line-height: 16px;
+    width: 65%;
+    white-space: nowrap; 
+    overflow-x: scroll;
+    overflow-y: scroll;
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+
+}
+
+textarea.sequence {
+    height: 50px;
+}
+textarea.psipred {
+    height: 60px;
+}
+textarea.disopred {
+    height: 120px;
+}
 
 /** Nav custom **/
 
@@ -46,11 +78,12 @@ div.nav-container {
     margin-right: 25px;
 }
 
+a.accordion-toggle {
+    display: inline;
+}
 
 /** Form custom **/
 
-form .small {
-}
 
 /** FOOTER **/
 

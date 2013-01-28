@@ -12,11 +12,24 @@
         {% for p in domain_dbo.proteins %}
             <p>{{ p }}</p>
         {% endfor %}
-    
-    {% else %}
-    
-        <p>[Dom search form]</p>
+
+    {% elif domain_dbo == None %}
+        
+        <p>No matching domain object found in database.</p>
 
     {% endif %}
+        
+    <hr />
+
+    <form class="form-inline" action="{{ url_for('domain') }}" method=post>
+        <select name="type" class="small input-small">
+            <option value="hpf_id" selected>hpf ID</option>
+            <option value="seq_id" >seq ID</option>
+            <option value="prediction_code" >prediction code</option>
+        </select>
+        <input  name="term"  type="text" class="small span2" placeholder="...">
+        <button type="submit" value="Submit" class="small btn btn-primary btn-small">search</button>
+    </form>
+
 
 {% endblock%}

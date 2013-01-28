@@ -15,14 +15,14 @@
            
             <!-- NOTE: that both GET and POST methods put variables in Flask request.form dict -->
             <form class="form-inline" action="{{ url_for('protein') }}" method=post>
-                <select name="type" class="small input-small">
+                <select name="type" class="input-small">
                     <option value="hpf_id" selected>hpf ID</option>
                     <option value="seq_id" >seq ID</option>
                     <option value="ac"     >accession</option>
                     <option value="keyword">keyword (!)</option>
                 </select>
-                <input  name="term"  type="text" class="small span2" placeholder="...">
-                <button type="submit" value="Submit" class="small btn btn-primary btn-small">search</button>
+                <input  name="term"  type="text" class="span2" placeholder="...">
+                <button type="submit" value="Submit" class="btn btn-primary btn-small">search</button>
             </form>
         </div>
         
@@ -31,12 +31,13 @@
             <p>Domain information includes all domain properties (length, source, region, type), sequence, Ginzu version, and known/unknown structure display.</p>
             <p>Domains can be fetched by domain ID, or sequence key. To see the component domains of a protein, search in Protein field.</p>
             <form class="form-inline" action="{{ url_for('domain') }}" method=post>
-                <select name="type" class="small input-small">
+                <select name="type" class="input-small">
                     <option value="hpf_id" selected>hpf ID</option>
                     <option value="seq_id" >seq ID</option>
+                    <option value="prediction_code" >prediction code</option>
                 </select>
-                <input  name="term"  type="text" class="small span2" placeholder="...">
-                <button type="submit" value="Submit" class="small btn btn-primary btn-small">search</button>
+                <input  name="term"  type="text" class="span2" placeholder="...">
+                <button type="submit" value="Submit" class="btn btn-primary btn-small">search</button>
             </form>
         </div>
         
@@ -45,11 +46,11 @@
             <p>Sequence information includes AA sequence, tool results (Psipred, etc), and proteins and/or domains associated with the sequence.</p>
             <p>Sequences are searchable by sequence ID, and can be compared to our databases via <a href="{{ url_for('blast') }}">blast</a> (or see the Blast field).</p>
             <form class="form-inline" action="{{ url_for('sequence') }}" method=post>
-                <select name="type" class="small input-small">
+                <select name="type" class="input-small">
                     <option value="hpf_id" selected>hpf ID</option>
                 </select>
-                <input  name="term"  type="text" class="small span2" placeholder="...">
-                <button type="submit" value="Submit" class="small btn btn-primary btn-small">search</button>
+                <input  name="term"  type="text" class="span2" placeholder="...">
+                <button type="submit" value="Submit" class="btn btn-primary btn-small">search</button>
             </form>
         </div>
     </div>
