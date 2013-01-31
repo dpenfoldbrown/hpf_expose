@@ -38,6 +38,15 @@ span.note {
             border-radius: 6px; /* Rounded corners*/
 }
 
+table {
+    font-size: 13px;
+    line-height: 14px;
+}
+
+table td {
+    /* width: 25%; */
+    table-layout: auto;
+}
 /* List display */
 
 ul.nav li.colored {

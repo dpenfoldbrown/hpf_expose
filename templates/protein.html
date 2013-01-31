@@ -8,6 +8,54 @@
                 <li class="colored"><a data-toggle="collapse" href="#{{ p.id }}">{{p.ac.ac}} ID: {{ p.id }} / Sequence: {{ p.sequence_key }} / Experiment: {{ p.experiment_key }}<i class="icon-chevron-down pull-right"></i></a></li>
                 <div id="{{ p.id }}" class="collapse">
 
+                    <table class="table table-hover">
+                        <tbody>
+                            <!-- Protein info -->
+                            <tr>
+                                <td><b>Protein ID</b></td>
+                                <td><a href="{{ url_for('fetch_protein', protein_id=p.id) }}">{{ p.id }}</a></td>
+                                <td><b>Protein Type</b></td>
+                                <td>{{ p.protein_type }}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Sequence ID</b></td>
+                                <td><a href="{{ url_for('fetch_sequence', sequence_id=p.sequence_key) }}">{{ p.sequence_key }}</a></td>
+                                <td><b>Inserted</b></td>
+                                <td>{{ p.insert_date }}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Experiment ID</b></td>
+                                <td colspan="3"><a href="{{ url_for('fetch_experiment', experiment_id=p.experiment_key) }}">{{ p.experiment_key }}</a></td>
+                            </tr>
+
+                            <!-- Protein Accession info (only if ac object exists) -->
+                            {% if p.ac %}
+                            <tr>
+                                <td><b>Description</b></td>
+                                <td colspan="3">{{ p.ac.description }}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Accession</b></td>
+                                <td>{{ p.ac.ac }}</td>
+                                <td><b>Alt. Accession</b></td>
+                                <td>{{ p.ac.ac2 }}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Taxonomy</b></td>
+                                <td>{{ p.ac.taxonomy_id }}</td>
+                                <td><b>Source Database</b></td>
+                                <td>{{ p.ac.db }}</td>
+                            </tr>
+                            <!--
+                            <tr>
+                                <td><b>Gene ID (GI)</b></td>
+                                <td colspan="3">{{ p.ac.gi }}</td>
+                            </tr>
+                            -->
+                            {% endif %}
+                        </tbody>                        
+                    </table>
+
                     <h4>Sequence</h4>
                     <textarea class="sequence">
                         {{p.sequence.sequence}}
@@ -35,7 +83,9 @@
                         {% endfor %}
                     {% endif %}
                     
-                    <hr />
+                    {% if not loop.last %}
+                        <hr />
+                    {% endif %}
                 </div> <!-- END collapsible region -->    
         {% endfor %}
         </ul>
@@ -45,7 +95,8 @@
         <p>No proteins found for given search terms. Tryyyy agaaaainnnnn</p>
         
     {% endif %}
-        
+    
+    <hr />
     <form class="form-inline" action="{{ url_for('protein') }}" method=post>
         <select name="type" class="small input-small">
             <option value="hpf_id" selected>hpf ID</option>
