@@ -47,6 +47,8 @@ table td {
     /* width: 25%; */
     table-layout: auto;
 }
+
+
 /* List display */
 
 ul.nav li.colored {
@@ -91,7 +93,55 @@ a.accordion-toggle {
     display: inline;
 }
 
-/** Form custom **/
+
+/* Domain display list */
+
+.domain-diagram {
+    margin-top: 10px;
+    margin-bottom: 30px;
+    line-height: 6px;
+}
+
+.domain-diagram .small {
+    font-size: 10px;
+}
+
+ul.domain-list {
+    width: 100%;
+}
+
+ul.domain-list li {
+    text-align: center;
+    padding: 0px;
+    float: left;
+    /* border-right: 1px solid #EEEEEE;
+    border-left: 1px solid #EEEEEE; */
+}
+
+.psiblast {
+    background-color: #BEEAE7; 
+    /* background-color: #ACE4F1; */
+    /* background-color: #6CDFEA; */
+}
+.fold_recognition {
+    background-color: #A8D26E; 
+    /* background-color: #CFDC02; */
+    /* background-color: #C9DE3C; */
+}
+.pfam {
+    background-color: #CDC9F3;
+    /* background-color: #FAC9DC; */
+    /* background-color: #D3B2D1; */
+}
+.msa {
+    /* background-color: #C9645A; */
+    background-color: #F8774B;
+}
+.unassigned {
+    background-color: #F3CD08;
+    /* background-color: #FFCC00; */
+    /* background-color: #F0D878; */
+}
 
 
 /** FOOTER **/

@@ -14,7 +14,7 @@
             <p>Proteins can be fetched by protein ID, sequence key, accession, or keyword (time consuming). Select field type below.</p>
            
             <!-- NOTE: that both GET and POST methods put variables in Flask request.form dict -->
-            <form class="form-inline" action="{{ url_for('protein') }}" method=post>
+            <form class="form-inline" action="{{ url_for('protein') }}" method=get>
                 <select name="type" class="input-small">
                     <option value="hpf_id" selected>hpf ID</option>
                     <option value="seq_id" >seq ID</option>
@@ -30,11 +30,12 @@
             <h3>Domain</h3>
             <p>Domain information includes all domain properties (length, source, region, type), sequence, Ginzu version, and known/unknown structure display.</p>
             <p>Domains can be fetched by domain ID, or sequence key. To see the component domains of a protein, search in Protein field.</p>
-            <form class="form-inline" action="{{ url_for('domain') }}" method=post>
+            <form class="form-inline" action="{{ url_for('domain') }}" method=get>
                 <select name="type" class="input-small">
                     <option value="hpf_id" selected>hpf ID</option>
                     <option value="seq_id" >seq ID</option>
                     <option value="prediction_code" >prediction code</option>
+                    <option value="protein_id">protein ID</option>
                 </select>
                 <input  name="term"  type="text" class="span2" placeholder="...">
                 <button type="submit" value="Submit" class="btn btn-primary btn-small">search</button>
@@ -45,7 +46,7 @@
             <h3>Sequence</h3>
             <p>Sequence information includes AA sequence, tool results (Psipred, etc), and proteins and/or domains associated with the sequence.</p>
             <p>Sequences are searchable by sequence ID, and can be compared to our databases via <a href="{{ url_for('blast') }}">blast</a> (or see the Blast field).</p>
-            <form class="form-inline" action="{{ url_for('sequence') }}" method=post>
+            <form class="form-inline" action="{{ url_for('sequence') }}" method=get>
                 <select name="type" class="input-small">
                     <option value="hpf_id" selected>hpf ID</option>
                 </select>
@@ -61,7 +62,7 @@
             <h3>Experiment</h3>
             <p>The experiment page displays a summary of the proteins and domains encapsulated by an experiment (a set of proteins, usually from a particular organism). </p>
             <p>Experiments can be fetched by ID, taxonomy ID, or organism name keyword search.</p>
-            <form class="form-inline" action="{{ url_for('experiment') }}" method=post>
+            <form class="form-inline" action="{{ url_for('experiment') }}" method=get>
                 <select name="type" class="input-small">
                     <option value="hpf_id" selected>hpf ID</option>
                     <option value="tax_id">tax. ID</option>
