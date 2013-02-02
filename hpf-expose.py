@@ -42,6 +42,13 @@ def get_search_fields(request_fields):
         pass
     return request_fields['type'], request_fields['term']
         
+def is_search(request):
+    """
+    Takes a request object, checks for fields in either form or args (values
+    in flask, a combined multidict) that indicates a search request.
+    Returns True if fields multidict has keys 'type' and 'term', otherwise false
+    """
+    return ('type' in request.values) and ('term' in request.values)
 
 
 ## ROUTES
@@ -54,13 +61,13 @@ def index():
    return render_template('index.html')
 
 
-@app.route('/sequence', methods=['GET','POST'])
+@app.route('/sequence', methods=['GET',])
 def sequence():
     """
     The sequence index page
     """
-    if request.method == 'POST':
-        type, search_term = get_search_fields(request.form)
+    if is_search(request):
+        type, search_term = get_search_fields(request.args)
         return redirect(url_for('fetch_sequence', sequence_id=search_term))
     
     return render_template('sequence.html')
@@ -75,7 +82,7 @@ def fetch_sequence(sequence_id):
     return render_template('sequence.html', seq_dbo=seq_dbo)
 
 
-@app.route('/experiment', methods=['GET','POST'])
+@app.route('/experiment', methods=['GET',])
 def experiment():
     """
     Experiment index page
@@ -90,31 +97,30 @@ def fetch_experiment(experiment_id):
     return "TODO"
 
 
-@app.route('/protein', methods=['GET', 'POST'])
+@app.route('/protein', methods=['GET',])
 def protein():
     """
     The protein index page
     """
-    if request.method == 'POST':
-        type, search_term = get_search_fields(request.form)
+    if is_search(request):
+        type, search_term = get_search_fields(request.args)
+        whole_search = "{0} : {1}".format(type, search_term)
+        sess = get_session()
 
         if type == "hpf_id":
-            return redirect(url_for('fetch_protein', protein_id=search_term))
+            proteins = sess.query(Protein).filter_by(id=search_term).all()
         elif type == "seq_id":
-            sess = get_session()
             proteins = sess.query(Protein).filter_by(sequence_key=search_term).all()
-            return render_template('protein.html', proteins=proteins)
         elif type == "ac":
-            sess = get_session()
             acs = sess.query(SequenceAc).filter_by(ac=search_term).all()
             proteins = [a.protein for a in acs if a.protein]
-            return render_template('protein.html', proteins=proteins)
         elif type == "keyword":
-            sess = get_session()
-            acs = sess.query(SequenceAc).filter(SequenceAc.description.like("%{0}%".format(search_term))).all()
+            acs = sess.query(SequenceAc).filter(SequenceAc.description.like("%{0} %".format(search_term))).all()
             proteins = [a.protein for a in acs if a.protein]
-            return render_template('protein.html', proteins=proteins)
-        return render_template('bad_search.html', request=request)
+        else:
+            return render_template('bad_search.html', request=request)
+
+        return render_template('protein.html', proteins=proteins, search=whole_search)
     
     return render_template('protein.html')
 
@@ -125,23 +131,38 @@ def fetch_protein(protein_id):
     """
     sess = get_session()
     p = sess.query(Protein).get(protein_id)
-    return render_template('protein.html', proteins=[p])
+    if p:
+        return render_template('protein.html', proteins=[p])
+    return render_template('protein.html', proteins=[])
 
 
-@app.route('/domain', methods=['GET','POST'])
+@app.route('/domain', methods=['GET',])
 def domain():
     """
     Domain index page
     """
-    if request.method == 'POST':
-        type, search_term = get_search_fields(request.form)
+    if is_search(request):
+        type, search_term = get_search_fields(request.args)
+        whole_search = "{0} : {1}".format(type, search_term)
+        sess = get_session()
+
         if type == "hpf_id":
-            return redirect(url_for('fetch_domain', domain_id=search_term))
+            domains = sess.query(Domain).filter_by(id=search_term).all()
+        
         elif type == "seq_id":
-            pass
+            domains = sess.query(Domain).filter_by(domain_sequence_key=search_term).all()
+        
         elif type == "prediction_code":
-            pass
-        return render_template('bad_search.html', request=request)
+            domains = sess.query(Domain).filter_by(ibm_prediction_code=search_term).all()
+        
+        elif type == "protein_id":
+            protein = sess.query(Protein).get(search_term)
+            domains = protein.domains
+        
+        else:
+            return render_template('bad_search.html', request=request)
+        
+        return render_template('domain.html', domains=domains, search=whole_search)
     
     return render_template('domain.html')
 
@@ -153,7 +174,9 @@ def fetch_domain(domain_id):
     """
     s = get_session()
     d = s.query(Domain).get(domain_id)
-    return render_template('domain.html', domain_dbo=d)
+    if d:
+        return render_template('domain.html', domains=[d])
+    return render_template('domain.html', domains=None)
 
 @app.route('/blast')
 def blast():
