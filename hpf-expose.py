@@ -20,12 +20,13 @@ def get_session():
     """
     Initializes and returns the global session object
     """
-    from hpf.hddb.db import ScopedSession
+    from hpf.hddb.db import Session
     global SESSION
     if SESSION:
         return SESSION
     else:
-        return ScopedSession()
+        SESSION = Session()
+        return SESSION
 
 def get_search_fields(request_fields):
     """
