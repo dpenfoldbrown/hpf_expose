@@ -9,10 +9,16 @@
         {% for d in domains %}
                 <li class="colored">
                     <a data-toggle="collapse" href="#{{ d.id }}">
-                    ID: {{ d.id }}<i class="icon-chevron-down pull-right"></i>
+                    <ul class="inline result-bar domain-bar">
+                        <li>ID: {{ d.id }}</li>
+                        <li>Sequence: {{ d.domain_sequence_key }}</li>
+                        <li>Type: {{ d.domain_type }}</li>
+                        <li>Range: {{ d.region.start }} - {{ d.region.stop }}</li>
+                        <li class="last"><i class="icon-chevron-down"></i></li>
+                    </ul>
                     </a>
                 </li>
-                <div id="{{ d.id }}" class="collapse in">
+                <div id="{{ d.id }}" class="collapse {% if loop.first %}in{% endif %}">
                     
                     <!-- Domain info -->
                     <table class="table table-hover">
@@ -41,14 +47,6 @@
                                 <td><b>Insert Date</b></td>
                                 <td>{{ d.insert_date }}</td>
                             </tr>
-
-                            <!-- Structure information based on type (known v unknown) -->
-                            {% if d.domain_type in ("psiblast", "fold_recognition") %}
-                                                    
-                            
-                            {% elif d.domain_type in ("pfam", "msa", "unassigned")%}
-                            
-                            {% endif %}
                         </tbody>                        
                     </table>
 
@@ -64,16 +62,45 @@
                         {{ d.sequence.psipred[0].prediction }}
                         {{ d.sequence.psipred[0].confidence }}
                         </textarea>
-                    {% endif %} 
+                    {% endif %}
+                    
+                    
+                    <!-- Structure information based on type (known v unknown) -->
+                    <h4>Structure</h4>
+                    {% if d.domain_type in ("psiblast", "fold_recognition") %}
+                        
+                    {% elif d.domain_type in ("pfam", "msa", "unassigned")%}
+                    
+                    {% endif %}
+                    
                     
                     {% if d.proteins %}
                         <h4>Proteins</h4>
+                        
+                        <!-- Diagrams -->
+                        <div class="domain-diagram">
+                            {% for dia_prot in d.proteins %}
+                                <ul class="domain-list inline nav">
+                                {% for dia_dom in dia_prot.domains %}
+                                    <li class="{% if dia_dom.id==d.id %}{{ d.domain_type }}{% else %}nothing{% endif %}" style="width: {{ 100 * dia_dom.sequence.sequence|length / dia_prot.sequence.sequence|length }}%">
+                                        <span class="small pull-left">&nbsp({{ dia_dom.region.start }})</span><span class="small pull-right">({{ dia_dom.region.stop }})&nbsp</span>
+                                        <a href="{{ url_for('fetch_domain', domain_id=dia_dom.id) }}">{{ dia_dom.domain_nr }}</a>
+                                    </li>
+                                {% endfor %}
+                                </ul>
+                                <hr />
+                            {% endfor %}
+                        </div>
+
+                        <!-- List -->
                         {% for p in d.proteins %}
                             <p><a href="{{ url_for('fetch_protein', protein_id=p.id) }}" target="_blank">{{ p }}</a></p>
                         {% endfor %}
+                        
                     {% endif %}
                     
                     {% if not loop.last %} <hr /> {% endif %}
+                
                 </div> <!-- END collapsible region -->    
         {% endfor %}
         </ul>

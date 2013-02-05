@@ -5,9 +5,17 @@
     {% if proteins %}
         <ul class="nav nav-pills nav-stacked">
         {% for p in proteins %}
+                <!-- The protein result bar -->
                 <li class="colored">
                     <a data-toggle="collapse" href="#{{ p.id }}">
-                    {% if p.ac %}AC: {{p.ac.ac}} / {% endif %} ID: {{ p.id }} / Sequence: {{ p.sequence_key }} / Experiment: {{ p.experiment_key }} / &nbsp&nbsp&nbsp {{ p.domains|length }} Domains<i class="icon-chevron-down pull-right"></i>
+                    <ul class="inline result-bar protein-bar">
+                        {% if p.ac %}<li>AC: {{p.ac.ac}}</li>{% endif %}
+                        <li>ID: {{ p.id }}</li>
+                        <li>Sequence: {{ p.sequence_key }}</li>
+                        <li>Experiment: {{ p.experiment_key }}</li>
+                        <li>{{ p.domains|length }} Domains</li>
+                        <li class="last"><i class="icon-chevron-down"></i></li>
+                    </ul>
                     </a>
                 </li>
                 <div id="{{ p.id }}" class="collapse">
@@ -28,8 +36,8 @@
                                 <td>{{ p.insert_date }}</td>
                             </tr>
                             <tr>
-                                <td><b>Experiment ID</b></td>
-                                <td colspan="3"><a href="{{ url_for('fetch_experiment', experiment_id=p.experiment_key) }}">{{ p.experiment_key }}</a></td>
+                                <td><b>Experiment</b></td>
+                                <td colspan="3"><a href="{{ url_for('fetch_experiment', experiment_id=p.experiment_key) }}">{{ p.experiment_key }} - {{ p.experiment.name }}</a></td>
                             </tr>
 
                             <!-- Protein Accession info (only if ac object exists) -->
@@ -50,19 +58,13 @@
                                 <td><b>Source Database</b></td>
                                 <td>{{ p.ac.db }}</td>
                             </tr>
-                            <!--
-                            <tr>
-                                <td><b>Gene ID (GI)</b></td>
-                                <td colspan="3">{{ p.ac.gi }}</td>
-                            </tr>
-                            -->
                             {% endif %}
                         </tbody>                        
                     </table>
 
+                    <!-- Domain Info -->
                     {% if p.domains %}
-                        <h4>Domains</h4>
-                        <blockquote><a href="{{ url_for('domain', type='protein_id', term=p.id) }}" target="_blank">See all domains in page-view</a></blockquote>
+                        <h4>Ginzu Domains</h4>
                         
                         <!-- DIAGRAM -->
                         <div class="domain-diagram">
@@ -78,11 +80,45 @@
                         </div>
                             
                         <!-- List -->
-                        {% for d in p.domains %}
-                            <p><a href="{{ url_for('fetch_domain', domain_id=d.id) }}" target="_blank">{{ d.domain_nr }}: {{ d }}</a></p>
-                        {% endfor %}
-                        <br />
-                    
+                        <table class="table domain-list">
+                            <tbody>
+                            {% for d in p.domains %}
+                                <tr>
+                                    <td><a href="{{ url_for('fetch_domain', domain_id=d.id) }}" target="_blank">Domain {{ d.domain_nr }}</a></td>
+                                    <td>ID {{ d.id }}</td>
+                                    <td>Sequence {{ d.domain_sequence_key }}</td>
+                                    <td>Type <span class="{{ d.domain_type }}">{{ d.domain_type }} ({{ d.method }})</span></td>
+                                    <td>
+                                        {% if d.domain_type=='psiblast' or d.domain_type=='fold_recognition' %}
+                                            {% if d.pdbseqs %}
+                                                PDB structure <a href="http://www.rcsb.org/pdb/explore/explore.do?structureId={{ d.pdbseqs[0].pdb.pdbId }}" target="_blank">{{ d.pdbseqs[0].pdb.pdbId }}:{{ d.pdbseqs[0].chain }} ({{ d.region.parent_start }}-{{ d.region.parent_stop }}) - {{ d.pdbseqs[0].description }}</a>
+                                            {% else %}
+                                                PDB structure not found
+                                            {% endif %}
+                                        {% elif d.domain_type=='pfam' or d.domain_type=='msa' or d.domain_type=='unassigned' %}
+                                            {% if d.foldable %}
+                                                Foldable {{ d.ibm_prediction_code }},
+                                                {% if d.mcmdata %}
+                                                    {{ d.mcmdata|length }} MCM entries,
+                                                {% endif %}
+                                                {% if d.foldable.convergence %}
+                                                    {{ d.foldable.convergence[0].clusters|length }} cluster centers
+                                                {% else %}
+                                                    Currently no structure predictions
+                                                {% endif %}
+                                            {% else %}
+                                                Domain is not foldable (see domain page)
+                                            {% endif %}
+                                        {% else %}
+                                            No structure found
+                                        {% endif %}
+                                    </td>
+                                </tr>   
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
+                        <blockquote><a href="{{ url_for('domain', type='protein_id', term=p.id) }}" target="_blank">See all domains in page-view</a></blockquote>
                         
                     {% endif %}
 

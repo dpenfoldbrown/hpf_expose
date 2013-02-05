@@ -16,12 +16,6 @@ body {
     padding-bottom: 40px;
 }
 
-p.fixed {
-    font-family: "Courier New", Courier, monospace;
-    font-size: 13px;
-    color: #111111;
-}
-
 span.note {
     color: #FA8072;
 }
@@ -43,11 +37,24 @@ table {
     line-height: 14px;
 }
 
-table td {
-    /* width: 25%; */
-    table-layout: auto;
+/* Protein + Domain + etc entry bar layout */
+
+ul.result-bar li {
+    text-align: left;
+    line-height: 18px;
 }
 
+ul.result-bar li.last {
+    float: right;
+    text-align: right;
+}
+
+ul.protein-bar li {
+    width: 15%;
+}
+ul.domain-bar li {
+    width: 18%;
+}
 
 /* List display */
 
@@ -89,12 +96,12 @@ div.nav-container {
     margin-right: 25px;
 }
 
-a.accordion-toggle {
-    display: inline;
-}
-
 
 /* Domain display list */
+
+table.domain-list td {
+    line-height: 10px;
+}
 
 .domain-diagram {
     margin-top: 10px;
@@ -119,8 +126,8 @@ ul.domain-list li {
 }
 
 .psiblast {
-    background-color: #BEEAE7; 
-    /* background-color: #ACE4F1; */
+    /* background-color: #BEEAE7; */
+    background-color: #ACE4F1;
     /* background-color: #6CDFEA; */
 }
 .fold_recognition {
@@ -143,6 +150,9 @@ ul.domain-list li {
     /* background-color: #F0D878; */
 }
 
+.nothing {
+    background-color: #DDDDDD;
+}
 
 /** FOOTER **/
 
