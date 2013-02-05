@@ -42,18 +42,20 @@ table {
 ul.result-bar li {
     text-align: left;
     line-height: 18px;
+    margin-right: 25px;
 }
 
 ul.result-bar li.last {
     float: right;
     text-align: right;
+    margin-right: 0px;
 }
 
 ul.protein-bar li {
-    width: 15%;
+    /* width: 15%; */
 }
 ul.domain-bar li {
-    width: 18%;
+    /* width: 18%; */
 }
 
 /* List display */
@@ -100,7 +102,11 @@ div.nav-container {
 /* Domain display list */
 
 table.domain-list td {
-    line-height: 10px;
+    line-height: 16px;
+}
+
+table.protein-list td {
+    line-height: 16px;
 }
 
 .domain-diagram {
