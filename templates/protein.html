@@ -5,7 +5,8 @@
     {% if proteins %}
         <ul class="nav nav-pills nav-stacked">
         {% for p in proteins %}
-                <!-- The protein result bar -->
+                
+                <!-- Protein result bar -->
                 <li class="colored">
                     <a data-toggle="collapse" href="#{{ p.id }}">
                     <ul class="inline result-bar protein-bar">
@@ -18,11 +19,14 @@
                     </ul>
                     </a>
                 </li>
+                
+                <!-- Protein Info: Hidden Content -->
                 <div id="{{ p.id }}" class="collapse">
 
+                    <!-- General Info Table -->
                     <table class="table table-hover">
                         <tbody>
-                            <!-- Protein info -->
+                            <!-- Protein -->
                             <tr>
                                 <td><b>Protein ID</b></td>
                                 <td><a href="{{ url_for('fetch_protein', protein_id=p.id) }}">{{ p.id }}</a></td>
@@ -66,7 +70,7 @@
                     {% if p.domains %}
                         <h4>Ginzu Domains</h4>
                         
-                        <!-- DIAGRAM -->
+                        <!-- Domain Diagram -->
                         <div class="domain-diagram">
                             <ul class="domain-list inline nav">
                             {% for d in p.domains %}
@@ -75,31 +79,49 @@
                                     <a href="{{ url_for('fetch_domain', domain_id=d.id) }}" target="_blank">{{ d.domain_nr }}</a>
                                 </li>
                             {% endfor %}
+                            <hr />
                             </ul>
-                            <br /><br />
                         </div>
                             
-                        <!-- List -->
+                        <!-- Domain List -->
                         <table class="table domain-list">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>ID</th>
+                                    <th>Seq Key</th>
+                                    <th>Type</th>
+                                    <th>Structure</th>
+                                </tr>
+                            </thead>
                             <tbody>
                             {% for d in p.domains %}
                                 <tr>
                                     <td><a href="{{ url_for('fetch_domain', domain_id=d.id) }}" target="_blank">Domain {{ d.domain_nr }}</a></td>
-                                    <td>ID {{ d.id }}</td>
-                                    <td>Sequence {{ d.domain_sequence_key }}</td>
-                                    <td>Type <span class="{{ d.domain_type }}">{{ d.domain_type }} ({{ d.method }})</span></td>
+                                    <td><a href="{{ url_for('fetch_domain', domain_id=d.id) }}" target="_blank">{{ d.id }}</a></td>
+                                    <td>{{ d.domain_sequence_key }}</td>
+                                    <td><span class="{{ d.domain_type }}">{{ d.domain_type }} ({{ d.method }})</span></td>
+                                    
+                                    <!-- Structure display - refer to these cases for structure retrieval from DB/ORM -->
                                     <td>
+                                        <!-- Known Struct: Link to PDB -->
                                         {% if d.domain_type=='psiblast' or d.domain_type=='fold_recognition' %}
                                             {% if d.pdbseqs %}
                                                 PDB structure <a href="http://www.rcsb.org/pdb/explore/explore.do?structureId={{ d.pdbseqs[0].pdb.pdbId }}" target="_blank">{{ d.pdbseqs[0].pdb.pdbId }}:{{ d.pdbseqs[0].chain }} ({{ d.region.parent_start }}-{{ d.region.parent_stop }}) - {{ d.pdbseqs[0].description }}</a>
                                             {% else %}
                                                 PDB structure not found
                                             {% endif %}
+                                        
+                                        <!-- Unknown Struct: Foldable, MCM entries, and Cluster Centers (just numbers) -->
                                         {% elif d.domain_type=='pfam' or d.domain_type=='msa' or d.domain_type=='unassigned' %}
+                                            {% if d.domain_type=='pfam' %}
+                                                Pfam domain <a href="http://pfam.sanger.ac.uk/family/{{ d.parent_id }}" target="_blank">{{d.parent_id}}</a>.
+                                            {% endif %}
                                             {% if d.foldable %}
-                                                Foldable {{ d.ibm_prediction_code }},
+                                                Foldable {{ d.foldable.prediction_code }},
                                                 {% if d.mcmdata %}
-                                                    {{ d.mcmdata|length }} MCM entries,
+                                                    {{ d.mcmdata|length }} MCM entries
+                                                    (Best: <a href="http://scop.berkeley.edu/search/?ver=1.75&key={{ d.mcmdata[0].sccs }}" target="_blank">{{ d.mcmdata[0].sccs }}</a> at {{ "%1.2f"|format(d.mcmdata[0].probability) }}),
                                                 {% endif %}
                                                 {% if d.foldable.convergence %}
                                                     {{ d.foldable.convergence[0].clusters|length }} cluster centers
@@ -118,6 +140,7 @@
                             </tbody>
                         </table>
 
+                        <!-- Domain page link -->
                         <blockquote><a href="{{ url_for('domain', type='protein_id', term=p.id) }}" target="_blank">See all domains in page-view</a></blockquote>
                         
                     {% endif %}
