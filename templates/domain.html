@@ -7,6 +7,8 @@
         <!-- Domains list -->
         <ul class="nav nav-pills nav-stacked">
         {% for d in domains %}
+                
+                <!-- Domain Result Bar -->
                 <li class="colored">
                     <a data-toggle="collapse" href="#{{ d.id }}">
                     <ul class="inline result-bar domain-bar">
@@ -18,9 +20,11 @@
                     </ul>
                     </a>
                 </li>
+                
+                <!-- Domain Info: Hidden -->
                 <div id="{{ d.id }}" class="collapse {% if loop.first %}in{% endif %}">
                     
-                    <!-- Domain info -->
+                    <!-- Domain info table -->
                     <table class="table table-hover">
                         <tbody>
                             <tr>
@@ -50,11 +54,21 @@
                         </tbody>                        
                     </table>
 
-                    <!-- Extended info-->
+                    <!-- Extended Domain info-->
                     <h4>Sequence</h4>
                     <textarea class="sequence">
                         {{d.sequence.sequence}}
                     </textarea>
+                    
+                    <!-- Domain Structure information based on type (known v unknown) -->
+                    <h4>Structure</h4>
+                    <div id="{{ d.id }}-structure" class="collapse in">
+                        {% if d.domain_type in ("psiblast", "fold_recognition") %}
+                            
+                        {% elif d.domain_type in ("pfam", "msa", "unassigned")%}
+                        
+                        {% endif %}
+                    </div>
                     
                     {% if d.sequence.psipred %}
                         <h4>Psipred</h4>
@@ -64,20 +78,11 @@
                         </textarea>
                     {% endif %}
                     
-                    
-                    <!-- Structure information based on type (known v unknown) -->
-                    <h4>Structure</h4>
-                    {% if d.domain_type in ("psiblast", "fold_recognition") %}
-                        
-                    {% elif d.domain_type in ("pfam", "msa", "unassigned")%}
-                    
-                    {% endif %}
-                    
-                    
+                    <!-- Domain Proteins -->
                     {% if d.proteins %}
-                        <h4>Proteins</h4>
+                        <h4>Member Proteins</h4>
                         
-                        <!-- Diagrams -->
+                        <!-- Domain's Protein's domain diagrams -->
                         <div class="domain-diagram">
                             {% for dia_prot in d.proteins %}
                                 <ul class="domain-list inline nav">
@@ -92,10 +97,29 @@
                             {% endfor %}
                         </div>
 
-                        <!-- List -->
-                        {% for p in d.proteins %}
-                            <p><a href="{{ url_for('fetch_protein', protein_id=p.id) }}" target="_blank">{{ p }}</a></p>
-                        {% endfor %}
+                        <!-- Domain's Proteins list -->
+                        <table class="table protein-list">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>ID</th>
+                                    <th>Seq Key</th>
+                                    <th>Accession</th>
+                                    <th>Experiment</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for p in d.proteins %}
+                                <tr>
+                                    <td>{{ loop.index }}</td> 
+                                    <td><a href="{{ url_for('fetch_protein', protein_id=p.id) }}" target="_blank">{{ p.id }}</a></td>
+                                    <td>{{ p.sequence_key }}</td>
+                                    <td>{{ p.ac.ac|default("No accession") }}</td>
+                                    <td>{{ p.experiment_key }} - {{ p.experiment.name|default("Experiment not found") }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
                         
                     {% endif %}
                     
