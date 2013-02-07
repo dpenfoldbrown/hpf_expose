@@ -4,29 +4,21 @@
 ##
 
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash, _app_ctx_stack
+from flask.ext.sqlalchemy import SQLAlchemy
+
 from hpf.hddb.db import Sequence, Protein, Domain, SequenceAc
 
 # Flask init
 app = Flask(__name__)
 app.debug = True
 
-# DB init
-SESSION = None
+# DB init (using Flask's SQLalchemy extension. Which is good - manages session scope)
+# Awesomely, can use the engine/session handling with current models in our ORM layer
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://dpb:dpb_nyu@handbanana.bio.nyu.edu:3306/hpf'
+db = SQLAlchemy(app)
 
 
 ## UTILITY FUNCTIONS
-
-def get_session():
-    """
-    Initializes and returns the global session object
-    """
-    from hpf.hddb.db import Session
-    global SESSION
-    if SESSION:
-        return SESSION
-    else:
-        SESSION = Session()
-        return SESSION
 
 def get_search_fields(request_fields):
     """
@@ -78,8 +70,7 @@ def fetch_sequence(sequence_id):
     """
     Sequence display page. Includes sequence, proteins? domains?
     """
-    sess = get_session()
-    seq_dbo = sess.query(Sequence).get(sequence_id)
+    seq_dbo = db.session.query(Sequence).get(sequence_id)
     return render_template('sequence.html', seq_dbo=seq_dbo)
 
 
@@ -106,17 +97,16 @@ def protein():
     if is_search(request):
         type, search_term = get_search_fields(request.args)
         whole_search = "{0} : {1}".format(type, search_term)
-        sess = get_session()
 
         if type == "hpf_id":
-            proteins = sess.query(Protein).filter_by(id=search_term).all()
+            proteins = db.session.query(Protein).filter_by(id=search_term).all()
         elif type == "seq_id":
-            proteins = sess.query(Protein).filter_by(sequence_key=search_term).all()
+            proteins = db.session.query(Protein).filter_by(sequence_key=search_term).all()
         elif type == "ac":
-            acs = sess.query(SequenceAc).filter_by(ac=search_term).all()
+            acs = db.session.query(SequenceAc).filter_by(ac=search_term).all()
             proteins = [a.protein for a in acs if a.protein]
         elif type == "keyword":
-            acs = sess.query(SequenceAc).filter(SequenceAc.description.like("%{0} %".format(search_term))).all()
+            acs = db.session.query(SequenceAc).filter(SequenceAc.description.like("%{0} %".format(search_term))).all()
             proteins = [a.protein for a in acs if a.protein]
         else:
             return render_template('bad_search.html', request=request)
@@ -130,8 +120,7 @@ def fetch_protein(protein_id):
     """
     Protein display page, fetches protein by ID and displays
     """
-    sess = get_session()
-    p = sess.query(Protein).get(protein_id)
+    p = db.session.query(Protein).get(protein_id)
     if p:
         return render_template('protein.html', proteins=[p])
     return render_template('protein.html', proteins=[])
@@ -145,19 +134,18 @@ def domain():
     if is_search(request):
         type, search_term = get_search_fields(request.args)
         whole_search = "{0} : {1}".format(type, search_term)
-        sess = get_session()
 
         if type == "hpf_id":
-            domains = sess.query(Domain).filter_by(id=search_term).all()
+            domains = db.session.query(Domain).filter_by(id=search_term).all()
         
         elif type == "seq_id":
-            domains = sess.query(Domain).filter_by(domain_sequence_key=search_term).all()
+            domains = db.session.query(Domain).filter_by(domain_sequence_key=search_term).all()
         
         elif type == "prediction_code":
-            domains = sess.query(Domain).filter_by(ibm_prediction_code=search_term).all()
+            domains = db.session.query(Domain).filter_by(ibm_prediction_code=search_term).all()
         
         elif type == "protein_id":
-            protein = sess.query(Protein).get(search_term)
+            protein = db.session.query(Protein).get(search_term)
             domains = protein.domains
         
         else:
@@ -173,8 +161,7 @@ def fetch_domain(domain_id):
     Domain display page. Includes: all info, sequence, ginzu info, region,
     and known v unknown structure display
     """
-    s = get_session()
-    d = s.query(Domain).get(domain_id)
+    d = db.session.query(Domain).get(domain_id)
     if d:
         return render_template('domain.html', domains=[d])
     return render_template('domain.html', domains=None)
