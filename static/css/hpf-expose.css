@@ -99,6 +99,24 @@ div.nav-container {
 }
 
 
+/* GLMol structure display */
+
+div.struct-div {
+    margin-bottom: 15px;
+    margin-right: 10px;
+    float: left;
+}
+
+div.glmol-struct {
+    width: 500px; 
+    height: 400px; 
+    border: 1px solid #EEEEEE;
+    background-color: white;
+}
+textarea.glmol-struct {
+    display: none;
+}
+
 /* Domain display list */
 
 table.domain-list td {

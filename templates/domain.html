@@ -3,6 +3,11 @@
     <h1>Domain</h1>
     
     {% if domains %}
+        <!-- GLMol script inclusions (ALL REQUIRED) -->
+        <script src="{{ url_for('static', filename='js/jquery-1.7.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/Three49custom.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/GLmol.js') }}"></script>
+        
         
         <!-- Domains list -->
         <ul class="nav nav-pills nav-stacked">
@@ -62,14 +67,18 @@
                     
                     <!-- Domain Structure information based on type (known v unknown) -->
                     <h4>Structure</h4>
-                    <div id="{{ d.id }}-structure" class="collapse in">
+                    <div id="{{ d.id }}-structure">
                         {% if d.domain_type in ("psiblast", "fold_recognition") %}
                             {% if d.pdbseqs %}
                                 
                                 <!-- GLMol Embed -->
                                 {% for pdbs in d.pdbseqs %}
-                                <div id="glmol-{{ pdbs.id }}" class="glmol-struct collapsible {% if loop.first %}in{% endif %}" style="width: 500px; height: 400px; background-color: white;"></div>
-                                <textarea id="glmol-{{ pdbs.id }}_src" style="display: none;"></textarea>
+                                <div id="structure-{{ pdbs.id }}" class="struct-div collapse">
+                                    <div id="glmol{{ pdbs.id }}" class="glmol-struct" ></div> <textarea id="glmol{{ pdbs.id }}_src" class="glmol-struct">{{ pdbs.structure.text }}</textarea>
+                                    <script type="text/javascript">
+                                        var glmol{{ pdbs.id }} = new GLmol('glmol{{ pdbs.id }}');
+                                    </script>
+                                </div>
                                 {% endfor %}
                                 
                                 <!-- PDBSeq list -->
@@ -81,6 +90,7 @@
                                             <th>Description</th>
                                             <th>Date Entered</th>
                                             <th>Type</th>
+                                            <th>View</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -92,7 +102,7 @@
                                             <td>{{ pdbs.description }}</td>
                                             <td>{{ pdbs.pdb.ascession_date }}</td>
                                             <td>{{ pdbs.pdb.experimentType }}</td>
-                                            <td></td>
+                                            <td>  <button class="btn btn-mini btn-info" type="button" data-toggle="collapse" href="#structure-{{ pdbs.id }}">Show Structure</button></td>
                                         </tr>
                                     {% endfor %}
                                     </tbody>
@@ -102,6 +112,7 @@
                             {% endif %}
                         {% elif d.domain_type in ("pfam", "msa", "unassigned")%}
                             {% if d.foldable %}
+                                Foldable, MCM and Clustering info coming
                             {% else %}
                                 Domain is not foldable (see foldable log)
                             {% endif %}
@@ -128,7 +139,7 @@
                                 <ul class="domain-list inline nav">
                                 {% for dia_dom in dia_prot.domains %}
                                     <li class="{% if dia_dom.id==d.id %}{{ d.domain_type }}{% else %}nothing{% endif %}" style="width: {{ 100 * dia_dom.sequence.sequence|length / dia_prot.sequence.sequence|length }}%">
-                                        {% if loop.first %}<span class="pull-left">&nbsp{{ d.proteins.index(dia_prot) + 1 }} |</span>
+                                        {% if loop.first %}<span class="pull-left">&nbsp{{ d.proteins.index(dia_prot) + 1 }}</span>
                                         {% else %}<span class="small pull-left">&nbsp({{ dia_dom.region.start }})</span>
                                         {% endif %}
                                         <span class="small pull-right">({{ dia_dom.region.stop }})&nbsp</span>
