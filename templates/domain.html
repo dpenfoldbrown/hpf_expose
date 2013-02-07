@@ -72,29 +72,27 @@
                             {% if d.pdbseqs %}
                                 
                                 <!-- GLMol Embed -->
+                                <!-- NOTE: These would obviously be way better to lazy-load (make the view structure button in table
+                                     load the structure text into textarea, as opposed to all loading on page generation
+                                -->
                                 {% for pdbs in d.pdbseqs %}
-                                <div id="structure-{{ pdbs.id }}" class="struct-div collapse">
-                                    <div id="glmol{{ pdbs.id }}" class="glmol-struct" ></div> <textarea id="glmol{{ pdbs.id }}_src" class="glmol-struct">{{ pdbs.structure.text }}</textarea>
-                                    <script type="text/javascript">
-                                        var glmol{{ pdbs.id }} = new GLmol('glmol{{ pdbs.id }}');
-                                    </script>
-                                </div>
+                                    {% set struct_id = "{0}s{1}".format(pdbs.id, loop.index) %}
+                                    <div id="kstructure-{{ struct_id }}" class="struct-div collapse">
+                                        <div id="glmol{{ struct_id }}" class="glmol-struct" ></div> <textarea id="glmol{{ struct_id }}_src" class="glmol-struct">{{ pdbs.structure.text }}</textarea>
+                                        <script type="text/javascript">
+                                            var glmol{{ struct_id }} = new GLmol('glmol{{ struct_id }}');
+                                        </script>
+                                    </div>
                                 {% endfor %}
                                 
                                 <!-- PDBSeq list -->
                                 <table class="table struct-list">
                                     <thead>
-                                        <tr>
-                                            <th>pdb ID</th>
-                                            <th>Range</th>
-                                            <th>Description</th>
-                                            <th>Date Entered</th>
-                                            <th>Type</th>
-                                            <th>View</th>
-                                        </tr>
+                                        <tr> <th>pdb ID</th><th>Range</th><th>Description</th><th>Date Entered</th><th>Type</th><th>View</th> </tr>
                                     </thead>
                                     <tbody>
                                     {% for pdbs in d.pdbseqs %}
+                                        {% set struct_id = "{0}s{1}".format(pdbs.id, loop.index) %}
                                         <tr>
                                             <td><a href="http://www.rcsb.org/pdb/explore/explore.do?structureId={{ pdbs.pdb.pdbId }}" target="_blank">{{ pdbs.pdb.pdbId }}:{{ pdbs.chain}}</a></td>
                                             <td>{{ d.region.parent_start }} - {{ d.region.parent_stop }}</td>
@@ -102,7 +100,7 @@
                                             <td>{{ pdbs.description }}</td>
                                             <td>{{ pdbs.pdb.ascession_date }}</td>
                                             <td>{{ pdbs.pdb.experimentType }}</td>
-                                            <td>  <button class="btn btn-mini btn-info" type="button" data-toggle="collapse" href="#structure-{{ pdbs.id }}">Show Structure</button></td>
+                                            <td><button class="btn btn-mini btn-info" type="button" data-toggle="collapse" href="#kstructure-{{ struct_id }}">Show Structure</button></td>
                                         </tr>
                                     {% endfor %}
                                     </tbody>
@@ -110,14 +108,55 @@
                             {% else %}
                                 <p>No PDB structures found</p>
                             {% endif %}
+                            
                         {% elif d.domain_type in ("pfam", "msa", "unassigned")%}
+                            
+                            {% if d.domain_type=='pfam' %}
+                                <p>Pfam domain <a href="http://pfam.sanger.ac.uk/family/{{ d.parent_id }}" target="_blank">{{d.parent_id}}</a></p>
+                            {% endif %}
+                            
                             {% if d.foldable %}
-                                Foldable, MCM and Clustering info coming
+                                {% if d.mcmdata %}
+                                    
+                                    <!-- MCM Structs GLMol embed-->
+                                    {% for match in d.mcmdata %}
+                                        {% set struct_id = "{0}s{1}".format(match.id, loop.index) %}
+                                        <div id="ustructure-{{ struct_id }}" class="struct-div collapse">
+                                            <div id="glmol{{ struct_id }}" class="glmol-struct" ></div> <textarea id="glmol{{ struct_id }}_src" class="glmol-struct">{{ match.structure.text }}</textarea>
+                                            <script type="text/javascript">
+                                                var glmol{{ struct_id }} = new GLmol('glmol{{ struct_id }}');
+                                            </script>
+                                        </div>
+                                    {% endfor %}
+                                    
+                                    <!-- MCM list -->
+                                    <table class="table">
+                                        <thead>
+                                            <tr><th>SCOP Family</th><th>Probability</th><th>% Alpha/Beta</th><th>SCOP</th><th>View</th></tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for match in d.mcmdata %}
+                                            {% set struct_id = "{0}s{1}".format(match.id, loop.index) %}
+                                            <tr>
+                                                <td>{{ match.sccs }}</td>
+                                                <td>{{ "%1.2f"|format(match.probability) }}</td>
+                                                <td>{{ "%1.2f"|format(match.percent_alpha) }} / {{ "%1.2f"|format(match.percent_beta) }}</td>
+                                                <td>{{ match.scop }}</td>
+                                                <td><button class="btn btn-mini btn-info" type="button" data-toggle="collapse" href="#ustructure-{{ struct_id }}">Show Structure</button></td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% endif %}
+                            
                             {% else %}
                                 Domain is not foldable (see foldable log)
                             {% endif %}
+                            
+                            <!-- TODO: hide/show FOLDABLE LOG -->
+                            
                         {% else %}
-                            No structure found
+                            <p>No structure found</p>
                         {% endif %}
                     </div>
                     
