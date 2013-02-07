@@ -11,7 +11,7 @@
         
         <!-- Domains list -->
         <ul class="nav nav-pills nav-stacked">
-        {% for d in domains %}
+        {% for d in domains.values()|sort(attribute='id') %}
                 
                 <!-- Domain Result Bar -->
                 <li class="colored">

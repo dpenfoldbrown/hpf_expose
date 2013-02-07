@@ -71,7 +71,9 @@ def fetch_sequence(sequence_id):
     Sequence display page. Includes sequence, proteins? domains?
     """
     seq_dbo = db.session.query(Sequence).get(sequence_id)
-    return render_template('sequence.html', seq_dbo=seq_dbo)
+    if seq_dbo:
+        return render_template('sequence.html', seq_dbo=seq_dbo)
+    return render_template('sequence.html', seq_dbo=None)
 
 
 @app.route('/experiment', methods=['GET',])
@@ -92,7 +94,7 @@ def fetch_experiment(experiment_id):
 @app.route('/protein', methods=['GET',])
 def protein():
     """
-    The protein index page
+    The protein index page. When given terms, send a dict (id->db.Protein) of proteins to the template
     """
     if is_search(request):
         type, search_term = get_search_fields(request.args)
@@ -111,7 +113,7 @@ def protein():
         else:
             return render_template('bad_search.html', request=request)
 
-        return render_template('protein.html', proteins=proteins, search=whole_search)
+        return render_template('protein.html', proteins=dict((p.id, p) for p in proteins), search=whole_search)
     
     return render_template('protein.html')
 
@@ -122,8 +124,8 @@ def fetch_protein(protein_id):
     """
     p = db.session.query(Protein).get(protein_id)
     if p:
-        return render_template('protein.html', proteins=[p])
-    return render_template('protein.html', proteins=[])
+        return render_template('protein.html', proteins={p.id: p})
+    return render_template('protein.html', proteins={})
 
 
 @app.route('/domain', methods=['GET',])
@@ -151,7 +153,7 @@ def domain():
         else:
             return render_template('bad_search.html', request=request)
         
-        return render_template('domain.html', domains=domains, search=whole_search)
+        return render_template('domain.html', domains=dict((d.id, d) for d in domains), search=whole_search)
     
     return render_template('domain.html')
 
@@ -163,8 +165,8 @@ def fetch_domain(domain_id):
     """
     d = db.session.query(Domain).get(domain_id)
     if d:
-        return render_template('domain.html', domains=[d])
-    return render_template('domain.html', domains=None)
+        return render_template('domain.html', domains={d.id: d})
+    return render_template('domain.html', domains={})
 
 @app.route('/blast')
 def blast():

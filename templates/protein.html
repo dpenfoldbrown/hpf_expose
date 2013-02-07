@@ -4,7 +4,7 @@
     
     {% if proteins %}
         <ul class="nav nav-pills nav-stacked">
-        {% for p in proteins %}
+        {% for p in proteins.values()|sort(attribute='id') %}
                 
                 <!-- Protein result bar -->
                 <li class="colored">
