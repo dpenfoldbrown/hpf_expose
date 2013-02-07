@@ -6,10 +6,9 @@ and EASY web format.
 Requires:
 
 Flask python web framework (http://flask.pocoo.org/)
+    Uses Flask's SQLAlchemy Extension (http://packages.python.org/Flask-SQLAlchemy/index.html)
     Uses Jinja2 templates (http://jinja.pocoo.org/docs/templates/)
 
-
-Uses:
 
 Bootstrap javascript/CSS library. Download per site (http://twitter.github.com/bootstrap/)
     Uses (and comes with) jQuery
