@@ -6,7 +6,7 @@
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash, _app_ctx_stack
 from flask.ext.sqlalchemy import SQLAlchemy
 
-from hpf.hddb.db import Sequence, Protein, Domain, SequenceAc
+from hpf.hddb.db import Sequence, Protein, Domain, SequenceAc, Structure
 
 # Flask init
 app = Flask(__name__)
@@ -89,6 +89,18 @@ def fetch_experiment(experiment_id):
     Experiment display page. Includes: info/names, counts (prot.), source, etc
     """
     return "TODO"
+
+@app.route('/embed-struct/<int:structure_id>', methods=['GET',])
+def embed_structure(structure_id, ):
+    """
+    A very simple page consisting only of GLMol embedding components. Meant for filling
+    in iframe on domain page. Takes a structure id, fetches structure DBO, and passes
+    it to template to render.
+    """
+    s = db.session.query(Structure).get(structure_id)
+    if s:
+        return render_template('embed_structure.html', structure=s)
+    return render_template('embed_structure.html')
 
 
 @app.route('/protein', methods=['GET',])

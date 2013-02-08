@@ -101,22 +101,17 @@ div.nav-container {
 
 /* GLMol structure display */
 
-div.struct-div {
+iframe.struct-frame {
     margin-bottom: 15px;
-    margin-right: 10px;
+    height: 410px;
+    width: 510px;
+    padding: 0;
+    border: 0;
+    display: block;
     position: relative;
     float: left;
 }
 
-div.glmol-struct {
-    width: 500px; 
-    height: 400px; 
-    border: 1px solid #DDDDDD;
-    background-color: white;
-}
-textarea.glmol-struct {
-    display: none;
-}
 
 /* Domain display list */
 
