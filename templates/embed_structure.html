@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en-US" xml:lang="en-US">
+
+<!--
+  - Bonneau Laboratory affiliated webpage. HPF data and resource the property
+  - of Richard Bonneau/NYU CGSB.
+  - Authors: Duncan Penfold-Brown
+-->
+
+<head>
+    <script src="{{ url_for('static', filename='js/jquery-1.7.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/Three49custom.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/GLmol.js') }}"></script>
+    <style>
+        body {margin: 0;}
+        div.glmol-struct {width:500px; height:400px; background-color: white; border: 1px solid #DDDDDD}
+        textarea.glmol-struct {display: none;}
+    </style>
+    
+</head>
+
+<body>
+    {% if structure %}
+        
+        <div id="glmol{{ structure.id }}" class="glmol-struct" ></div> 
+        <textarea id="glmol{{ structure.id }}_src" class="glmol-struct">{{ structure.text }}</textarea>
+        
+        <script type="text/javascript">
+            var glmol{{ structure.id }} = new GLmol('glmol{{ structure.id }}');
+        </script>
+        
+    {% else %}
+        <p>No structure available</p>
+    {% endif %}
+
+</body>
+
+</html>
