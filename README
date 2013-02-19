@@ -20,7 +20,6 @@ Pages for Protein, Domain, Sequence, and Experiment HPF entities. Displays for
 each, with interlinking. Links to HPF Blast interfaces. Will also link to PDB
 for known domain structures, and:
 
-TODO: incorporate GLmol (http://webglmol.sourceforge.jp/index-en.html) for decoy
-structure display. (javascript package for all-JS structure display).
-
+Basic GLMol embeded structures in place (with lazy loading via iframes). Need to
+make GLMol more sophisticated (view controls and style).
 

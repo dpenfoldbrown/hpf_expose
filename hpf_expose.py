@@ -10,7 +10,6 @@ from hpf.hddb.db import Sequence, Protein, Domain, SequenceAc, Structure
 
 # Flask init
 app = Flask(__name__)
-app.debug = True
 
 # DB init (using Flask's SQLalchemy extension. Which is good - manages session scope)
 # Awesomely, can use the engine/session handling with current models in our ORM layer
