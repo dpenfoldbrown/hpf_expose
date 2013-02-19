@@ -20,6 +20,7 @@ if not app.debug:
     log_bytes = 10 * 1024 * 1024
     
     file_handler = RotatingFileHandler(log_file, mode='a', maxBytes=log_bytes, backupCount=0)
+    file_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s ' '[in %(pathname)s:%(lineno)d]'))
     file_handler.setLevel(logging.DEBUG)
     app.logger.addHandler(file_handler)
 
