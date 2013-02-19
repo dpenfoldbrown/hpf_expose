@@ -23,3 +23,12 @@ for known domain structures, and:
 Basic GLMol embeded structures in place (with lazy loading via iframes). Need to
 make GLMol more sophisticated (view controls and style).
 
+
+Security:
+
+NOTE that *master* branch must always use the Flask production-style app (ie,
+never run an app in a production setting with app.debug = True, as it enables
+the running of arbitrary python code).
+
+*master* branch has app.debug set to False. 
+*dev* branch has app.debug set to True, to allow for auto-reload and debugging
