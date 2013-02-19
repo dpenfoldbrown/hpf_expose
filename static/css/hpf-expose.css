@@ -5,8 +5,6 @@
  */
 
 
-/** General rules **/
-
 body {
     /* font-family: "Lucida Grande", Helvetica, Arial, sans-serif; */
     /* font-size: 12px; */
@@ -15,11 +13,9 @@ body {
     padding-top: 60px;
     padding-bottom: 40px;
 }
-
 span.note {
     color: #FA8072;
 }
-
 .page-header {
     padding: 30px;
     margin-bottom: 20px;
@@ -31,34 +27,13 @@ span.note {
        -moz-border-radius: 6px; /* Mozilla firefox*/
             border-radius: 6px; /* Rounded corners*/
 }
-
 table {
     font-size: 13px;
     line-height: 14px;
 }
 
-/* Protein + Domain + etc entry bar layout */
 
-ul.result-bar li {
-    text-align: left;
-    line-height: 18px;
-    margin-right: 25px;
-}
-
-ul.result-bar li.last {
-    float: right;
-    text-align: right;
-    margin-right: 0px;
-}
-
-ul.protein-bar li {
-    /* width: 15%; */
-}
-ul.domain-bar li {
-    /* width: 18%; */
-}
-
-/* List display */
+/** Protein + Domain + etc entry bar layout **/
 
 ul.nav li.colored {
     background-color: #CCDEEE;
@@ -66,6 +41,25 @@ ul.nav li.colored {
        -moz-border-radius: 6px; /* Mozilla firefox*/
             border-radius: 6px; /* Rounded corners*/
 }
+ul.result-bar li {
+    text-align: left;
+    line-height: 18px;
+    margin-right: 25px;
+}
+ul.result-bar li.last {
+    float: right;
+    text-align: right;
+    margin-right: 0px;
+}
+ul.protein-bar li {
+    /* width: 15%; */
+}
+ul.domain-bar li {
+    /* width: 18%; */
+}
+
+
+/** Text areas for sequence and sequence info **/
 
 textarea {
     font-family: "Courier New", Courier, monospace;
@@ -78,9 +72,7 @@ textarea {
     -webkit-box-sizing: border-box;
        -moz-box-sizing: border-box;
             box-sizing: border-box;
-
 }
-
 textarea.sequence {
     height: 50px;
 }
@@ -91,7 +83,8 @@ textarea.disopred {
     height: 120px;
 }
 
-/** Nav custom **/
+
+/** Nav customization **/
 
 div.nav-container {
     margin-left: 25px;
@@ -99,44 +92,47 @@ div.nav-container {
 }
 
 
-/* GLMol structure display */
+/** GLMol structure display **/
+
+div.embedded-struct {
+    width: 100%;
+    border-top: 1px solid #EEEEEE;
+}
 
 iframe.struct-frame {
-    margin-bottom: 15px;
+    display: block;
     height: 410px;
     width: 510px;
-    padding: 0;
-    border: 0;
-    display: block;
-    position: relative;
+    margin-bottom: 15px;
+    /* Centered
+    margin-left: auto;
+    margin-right: auto;
+    */
     float: left;
+    border: 0;
+    padding: 0;
 }
 
 
-/* Domain display list */
+/** Domain list and diagram display **/
 
 table.domain-list td {
     line-height: 16px;
 }
-
 table.protein-list td {
     line-height: 16px;
 }
-
 .domain-diagram {
     margin-top: 10px;
     margin-bottom: 30px;
     line-height: 6px;
 }
-
 .domain-diagram .small {
     font-size: 10px;
 }
-
 ul.domain-list {
     width: 100%;
 }
-
 ul.domain-list li {
     text-align: center;
     padding: 0px;
@@ -145,6 +141,8 @@ ul.domain-list li {
     border-left: 1px solid #EEEEEE; */
 }
 
+
+/** Domain type classes **/
 .psiblast {
     /* background-color: #BEEAE7; */
     background-color: #ACE4F1;
@@ -174,7 +172,8 @@ ul.domain-list li {
     background-color: #DDDDDD;
 }
 
-/** FOOTER **/
+
+/** Footer styles **/
 
 #footer {
     margin-top: 30px;
@@ -184,17 +183,14 @@ ul.domain-list li {
     padding-top: 15px;
     font-size: 75%;
 }
-
 #footer p {
     /* text-align: center; */
     margin: 2px 0;
 }
-
 #footer-icons {
     display: inline;
     float: right;
 }
-
 #footer img {
     width: 45px;
     height: 45px;

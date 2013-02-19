@@ -13,7 +13,7 @@
                         {% if p.ac %}<li>AC: {{p.ac.ac}}</li>{% endif %}
                         <li>ID: {{ p.id }}</li>
                         <li>Sequence: {{ p.sequence_key }}</li>
-                        <li>Experiment: {{ p.experiment_key }}</li>
+                        <li>Experiment: {{ p.experiment_key }} ({{p.experiment.short_name}})</li>
                         <li>{{ p.domains|length }} Domains</li>
                         <li class="last"><i class="icon-chevron-down"></i></li>
                     </ul>
@@ -172,7 +172,7 @@
         {% endfor %}
         </ul>
 
-    {% elif proteins==[] %}
+    {% elif proteins=={} %}
         
         <p>Search for proteins with <b>{{ search }}</b> returned no results. Tryyyy agaaaainnnnn</p>
         
