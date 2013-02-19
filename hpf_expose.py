@@ -10,7 +10,6 @@ from hpf.hddb.db import Sequence, Protein, Domain, SequenceAc, Structure
 
 ## Flask init
 app = Flask(__name__)
-#app.debug = True
 
 ## Logging init (could also add an SMTP mail handler to mail on ERRORs)
 if not app.debug:
