@@ -8,12 +8,22 @@ from flask.ext.sqlalchemy import SQLAlchemy
 
 from hpf.hddb.db import Sequence, Protein, Domain, SequenceAc, Structure
 
-# Flask init
+## Flask init
 app = Flask(__name__)
-app.debug = True
+#app.debug = True
 
-# DB init (using Flask's SQLalchemy extension. Which is good - manages session scope)
-# Awesomely, can use the engine/session handling with current models in our ORM layer
+## Logging init (could also add an SMTP mail handler to mail on ERRORs)
+if not app.debug:
+    import logging
+    from logging.handlers import RotatingFileHandler
+    log_file = "hpf_expose.log"
+    log_bytes = 10 * 1024 * 1024
+    
+    file_handler = RotatingFileHandler(log_file, mode='a', maxBytes=log_bytes, backupCount=0)
+    file_handler.setLevel(logging.DEBUG)
+    app.logger.addHandler(file_handler)
+
+## DB init (using Flask's SQLalchemy extension. Which is good - manages session scope)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://dpb:dpb_nyu@handbanana.bio.nyu.edu:3306/hpf'
 db = SQLAlchemy(app)
 
@@ -196,3 +206,4 @@ def about():
 
 if __name__ == "__main__":
     app.run()
+
