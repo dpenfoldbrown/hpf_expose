@@ -6,11 +6,10 @@
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash, _app_ctx_stack
 from flask.ext.sqlalchemy import SQLAlchemy
 
-from hpf.hddb.db import Sequence, Protein, Domain, SequenceAc, Structure
+from hpf.hddb.db import Sequence, Experiment, Protein, Domain, SequenceAc, Structure
 
 ## Flask init
 app = Flask(__name__)
-app.debug = True
 
 ## Logging init (could also add an SMTP mail handler to mail on ERRORs)
 if not app.debug:
@@ -92,6 +91,19 @@ def experiment():
     """
     Experiment index page
     """
+    if is_search(request):
+        type, search_term = get_search_fields(request.args)
+        whole_search = "{0} : {1}".format(type, search_term)
+        
+        if type == "hpf_id":
+            experiments = db.session.query(Experiment).filter_by(id=search_term).all()
+        elif type == "tax_id":
+            experiments = db.session.query(Experiment).filter_by(taxonomy_id=search_term).all()
+        elif type == "organism":
+            experiments = db.session.query(Experiment).filter(Experiment.short_name.like("%{0}%".format(search_term))).all()
+        else:
+            return render_template('bad_search.html', request=request)
+        return render_template('experiment.html', experiments=dict((e.id, e) for e in experiments), search=whole_search)
     return render_template('experiment.html')
 
 @app.route('/experiment/<int:experiment_id>')
@@ -99,7 +111,11 @@ def fetch_experiment(experiment_id):
     """
     Experiment display page. Includes: info/names, counts (prot.), source, etc
     """
-    return "TODO"
+    e = db.session.query(Experiment).get(experiment_id)
+    if e:
+        return render_template('experiment.html', experiments={e.id: e})
+    return render_template('experiment.html', experiments={})
+
 
 @app.route('/embed-struct/<int:structure_id>', methods=['GET',])
 def embed_structure(structure_id, ):
@@ -162,17 +178,13 @@ def domain():
 
         if type == "hpf_id":
             domains = db.session.query(Domain).filter_by(id=search_term).all()
-        
         elif type == "seq_id":
             domains = db.session.query(Domain).filter_by(domain_sequence_key=search_term).all()
-        
         elif type == "prediction_code":
             domains = db.session.query(Domain).filter_by(ibm_prediction_code=search_term).all()
-        
         elif type == "protein_id":
             protein = db.session.query(Protein).get(search_term)
             domains = protein.domains
-        
         else:
             return render_template('bad_search.html', request=request)
         

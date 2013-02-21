@@ -2,6 +2,77 @@
 {% block body %}
     <h1>Experiment</h1>
     
-    <p>[Experiment search form]</p>
+    {% if experiments %}
+        
+        <ul class="nav nav-pills nav-stacked">
+        {% for e in experiments.values()|sort(attribute='id') %}
+            
+            <!-- Experiment results bar -->
+            <li class="colored">
+                <a data-toggle="collapse" href="#{{ e.id }}">
+                <ul class="inline result-bar">
+                    <li>ID: {{ e.id }}</li>
+                    <li>{{ e.name }} ({{ e.short_name }})</li>
+                    <li>Tax. ID: {{ e.taxonomy_id }}</li>
+                    <li>{{ e.start_date }}</li>
+                    <li class="last"><i class="icon-chevron-down"></i></li>
+                </ul>
+                </a>
+            </li>
+            
+            <!-- Experiment info (hidden content) -->
+            <div id="{{ e.id }}" class="collapse">
+                
+                <!-- General info table -->
+                <table class="table table-hover">
+                    <tbody>
+                        <tr>
+                            <td><b>Experiment ID</b></td>
+                            <td>{{ e.id }}</td>
+                            <td><b>Taxonomy</b></td>
+                            <td>{{ e.taxonomy_id }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Name</b></td>
+                            <td>{{ e.name }} ({{ e.short_name }})</td>
+                            <td><b>Inserted</b></td>
+                            <td>{{ e.start_date }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Description</b></td>
+                            <td colspan="3">{{ e.description }}</td>
+                        </tr>
+                        <tr>
+                            <td><b># Proteins</b></td>
+                            <td>{{ e.protein_count }}</td>
+                            <td><b>Experiment Type</b></td>
+                            <td>{{ e.experiment_type }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            
+            </div>
+
+        {% endfor %}        
+        </ul>
+        
+    
+    {% elif experiments=={} %}
+        
+        <p>Search for experiments with <b>{{ search }}</b> returned no results. Try again.</p>
+    
+    {% endif %}
+    
+    <hr />
+    
+    <form class="form-inline" action="{{ url_for('experiment') }}" method=get>
+        <select name="type" class="input-small">
+            <option value="hpf_id" selected>hpf ID</option>
+            <option value="tax_id">tax. ID</option>
+            <option value="organism">organism</option>
+        </select>
+        <input  name="term"  type="text" class="span2" placeholder="...">
+        <button type="submit" value="Submit" class="btn btn-primary btn-small">search</button>
+    </form>
 
 {% endblock%}
